@@ -1,0 +1,256 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/CaffeinaLab/preferences#readme"
+
+    >preferences (v0.2.1)</a>
+</h1>
+<h4>Manage CLI application encrypted preferences.</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.preferences">module preferences</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.preferences.preferences">
+            function <span class="apidocSignatureSpan"></span>preferences
+            <span class="apidocSignatureSpan">(id, defs, options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.preferences.toString">
+            function <span class="apidocSignatureSpan">preferences.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.preferences.toString">module preferences.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.preferences.toString.toString">
+            function <span class="apidocSignatureSpan">preferences.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.preferences" id="apidoc.module.preferences">module preferences</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.preferences.preferences" id="apidoc.element.preferences.preferences">
+        function <span class="apidocSignatureSpan"></span>preferences
+        <span class="apidocSignatureSpan">(id, defs, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function Preferences(id, defs, options) {
+  options = options || {
+    key: null
+  }
+  var self = this
+  var identifier = id.replace(/[\/\?&#x3c;&#x3e;\\:\*\|&#x22; :]/g, &#x27;.&#x27;).replace(/\.+/g, &#x27;.&#x27;)
+  var path = require(&#x27;path&#x27;)
+  var homedir = require(&#x27;os-homedir&#x27;)()
+  var dirpath = path.join(homedir, &#x27;.config&#x27;, &#x27;preferences&#x27;)
+  var filepath = path.join(dirpath, identifier + &#x27;.pref&#x27;)
+  var fs = require(&#x27;graceful-fs&#x27;)
+  var writeFileAtomic = require(&#x27;write-file-atomic&#x27;)
+  var mkdirp = require(&#x27;mkdirp&#x27;)
+  var crypto = require(&#x27;crypto&#x27;)
+  var password = (function () {
+    var key = options.key || path.join(homedir, &#x27;.ssh&#x27;, &#x27;id_rsa&#x27;)
+    try {
+      // Use private SSH key or...
+      return fs.readFileSync(key).toString(&#x27;utf8&#x27;)
+    } catch (e) {
+      // ...fallback to an id dependant password
+      return &#x27;PREFS-&#x27; + identifier
+    }
+  })()
+  var savePristine = false
+  var savedData = null
+
+  function encode (text) {
+    var cipher = crypto.createCipher(&#x27;aes128&#x27;, password)
+    return cipher.update(new Buffer(text).toString(&#x27;utf8&#x27;), &#x27;utf8&#x27;, &#x27;hex&#x27;) + cipher.final(&#x27;hex&#x27;)
+  }
+
+  function decode (text) {
+    var decipher = crypto.createDecipher(&#x27;aes128&#x27;, password)
+    return decipher.update(String(text), &#x27;hex&#x27;, &#x27;utf8&#x27;) + decipher.final(&#x27;utf8&#x27;)
+  }
+
+  function save () {
+    var payload = encode(String(JSON.stringify(self) || &#x27;{}&#x27;))
+    try {
+      mkdirp.sync(dirpath, parseInt(&#x27;0700&#x27;, 8))
+      writeFileAtomic.sync(filepath, payload, {
+        mode: parseInt(&#x27;0600&#x27;, 8)
+      })
+    } catch (err) {}
+  }
+
+  try {
+    // Try to read and decode preferences saved on disc
+    savedData = JSON.parse(decode(fs.readFileSync(filepath, &#x27;utf8&#x27;)))
+  } catch (err) {
+    // Read error (maybe file doesn&#x27;t exist) so update with defaults
+    savedData = defs || {}
+    savePristine = true
+  }
+
+  // Clone object
+  for (var o in savedData) self[o] = savedData[o]
+
+  // Config file was empty, save default values
+  savePristine &#x26;&#x26; save()
+
+  // Save all on program exit
+  process.on(&#x27;exit&#x27;, save)
+
+  // If supported observe object for saving on modify
+  if (Object.observe) Object.observe(self, save)
+
+  return self
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.preferences.toString" id="apidoc.element.preferences.toString">
+        function <span class="apidocSignatureSpan">preferences.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+var writeFileAtomic = require(&#x27;write-file-atomic&#x27;)
+var mkdirp = require(&#x27;mkdirp&#x27;)
+var crypto = require(&#x27;crypto&#x27;)
+var password = (function () {
+  var key = options.key || path.join(homedir, &#x27;.ssh&#x27;, &#x27;id_rsa&#x27;)
+  try {
+    // Use private SSH key or...
+    return fs.readFileSync(key).<span class="apidocCodeKeywordSpan">toString</span>(&#x27;utf8&#x27;)
+  } catch (e) {
+    // ...fallback to an id dependant password
+    return &#x27;PREFS-&#x27; + identifier
+  }
+})()
+var savePristine = false
+var savedData = null
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.preferences.toString" id="apidoc.module.preferences.toString">module preferences.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.preferences.toString.toString" id="apidoc.element.preferences.toString.toString">
+        function <span class="apidocSignatureSpan">preferences.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+var writeFileAtomic = require(&#x27;write-file-atomic&#x27;)
+var mkdirp = require(&#x27;mkdirp&#x27;)
+var crypto = require(&#x27;crypto&#x27;)
+var password = (function () {
+  var key = options.key || path.join(homedir, &#x27;.ssh&#x27;, &#x27;id_rsa&#x27;)
+  try {
+    // Use private SSH key or...
+    return fs.readFileSync(key).<span class="apidocCodeKeywordSpan">toString</span>(&#x27;utf8&#x27;)
+  } catch (e) {
+    // ...fallback to an id dependant password
+    return &#x27;PREFS-&#x27; + identifier
+  }
+})()
+var savePristine = false
+var savedData = null
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
