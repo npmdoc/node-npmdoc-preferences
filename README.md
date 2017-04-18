@@ -1,5 +1,8 @@
-# api documentation for  [preferences (v0.2.1)](https://github.com/CaffeinaLab/preferences#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-preferences.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-preferences) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-preferences.svg)](https://travis-ci.org/npmdoc/node-npmdoc-preferences)
-#### Manage CLI application encrypted preferences.
+# npmdoc-preferences
+
+api documentation for  [preferences (v0.2.1)](https://github.com/CaffeinaLab/preferences#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-preferences.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-preferences) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-preferences.svg)](https://travis-ci.org/npmdoc/node-npmdoc-preferences)
+
+Manage CLI application encrypted preferences.
 
 [![NPM](https://nodei.co/npm/preferences.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/preferences)
 
