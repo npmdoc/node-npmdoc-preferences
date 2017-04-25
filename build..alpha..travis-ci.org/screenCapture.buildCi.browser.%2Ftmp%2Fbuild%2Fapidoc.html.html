@@ -63,28 +63,6 @@
 
         </li>
 
-        <li>
-
-            <a class="apidocElementLiA" href="#apidoc.element.preferences.toString">
-            function <span class="apidocSignatureSpan">preferences.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
-    </ol></li>
-
-    <li class="apidocModuleLi"><a href="#apidoc.module.preferences.toString">module preferences.toString</a><ol>
-
-        <li>
-
-            <a class="apidocElementLiA" href="#apidoc.element.preferences.toString.toString">
-            function <span class="apidocSignatureSpan">preferences.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
     </ol></li>
 
 </ol></div>
@@ -171,71 +149,6 @@
   return self
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
-    </ul>
-
-
-
-    <h2>
-        <a href="#apidoc.element.preferences.toString" id="apidoc.element.preferences.toString">
-        function <span class="apidocSignatureSpan">preferences.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">toString = function () {
-    return text;
-}</pre></li>
-    <li>example usage<pre class="apidocCodePre">...
-var writeFileAtomic = require('write-file-atomic')
-var mkdirp = require('mkdirp')
-var crypto = require('crypto')
-var password = (function () {
-  var key = options.key || path.join(homedir, '.ssh', 'id_rsa')
-  try {
-    // Use private SSH key or...
-    return fs.readFileSync(key).<span class="apidocCodeKeywordSpan">toString</span>('utf8')
-  } catch (e) {
-    // ...fallback to an id dependant password
-    return 'PREFS-' + identifier
-  }
-})()
-var savePristine = false
-var savedData = null
-...</pre></li>
-    </ul>
-
-
-</div>
-
-<div class="apidocSectionDiv">
-<h1><a href="#apidoc.module.preferences.toString" id="apidoc.module.preferences.toString">module preferences.toString</a></h1>
-
-
-    <h2>
-        <a href="#apidoc.element.preferences.toString.toString" id="apidoc.element.preferences.toString.toString">
-        function <span class="apidocSignatureSpan">preferences.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
-    <li>example usage<pre class="apidocCodePre">...
-var writeFileAtomic = require('write-file-atomic')
-var mkdirp = require('mkdirp')
-var crypto = require('crypto')
-var password = (function () {
-  var key = options.key || path.join(homedir, '.ssh', 'id_rsa')
-  try {
-    // Use private SSH key or...
-    return fs.readFileSync(key).<span class="apidocCodeKeywordSpan">toString</span>('utf8')
-  } catch (e) {
-    // ...fallback to an id dependant password
-    return 'PREFS-' + identifier
-  }
-})()
-var savePristine = false
-var savedData = null
-...</pre></li>
     </ul>
 
 
